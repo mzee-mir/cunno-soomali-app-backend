@@ -4,6 +4,17 @@ import RestaurentController from "../controllers/RestaurentController";
 
 
 const router = express.Router();
+
+router.get(
+  "/detail/:restaurantId",
+  param("restaurantId")
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage("RestaurantId paramenter must be a valid string"),
+  RestaurentController.getRestaurant
+);
+
 router.get(
     "/search/:city",
     param("city")

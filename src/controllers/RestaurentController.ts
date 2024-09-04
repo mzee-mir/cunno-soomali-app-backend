@@ -1,5 +1,27 @@
 import { Request, Response } from "express";
 import Restaurant from "../models/Restaurant";
+import mongoose from "mongoose";
+
+const getRestaurant = async (req: Request, res: Response) => {
+  try {
+    const restaurantId = req.params.restaurantId;
+
+    if (!mongoose.Types.ObjectId.isValid(restaurantId)) {
+      return res.status(400).json({ message: "Invalid restaurant ID format" });
+    }
+
+    const restaurant = await Restaurant.findById(restaurantId);
+    if (!restaurant) {
+      return res.status(404).json({ message: "restaurant not found" });
+    }
+
+    res.json(restaurant);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "something went wrong" });
+  }
+};
+
 
 const searchRestaurant = async (req: Request, res: Response) => {
     try {
@@ -68,5 +90,6 @@ const searchRestaurant = async (req: Request, res: Response) => {
       }
     };
     export default {
+        getRestaurant,
         searchRestaurant,
     }
