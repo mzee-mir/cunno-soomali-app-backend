@@ -7,6 +7,9 @@ import{v2 as cloudinary} from "cloudinary";
 import MyRestaurantRoute from "./routes/MyRestaurantRoute";
 import Restaurant from "./models/Restaurant";
 import Restaurent from "./routes/Restaurent";
+import OrderRoutes from "./routes/OrderRoutes";
+
+
 
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING  as string).then(() => console.log("Connected to database"));
@@ -20,8 +23,12 @@ cloudinary.config({
 
 
 const app = express();
-app.use(express.json());
+
 app.use(cors())
+
+app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }))
+
+app.use(express.json());
 
 app.get("/health", async(req:Request, res:Response)=> {
     res.send ({message: "health Ok! "});
@@ -31,7 +38,9 @@ app.use("/api/my/user", myUserRoutes);
 
 app.use("/api/my/restaurant", MyRestaurantRoute);
 
-app.use("/api/my/restaurant", Restaurent)
+app.use("/api/restaurant", Restaurent);
+
+app.use("/api/order", OrderRoutes)
 
  
 
