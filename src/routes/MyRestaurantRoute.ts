@@ -3,6 +3,8 @@ import multer from "multer";
 import MyRestaurantController from "../controllers/MyRestaurantController";
 import { jwtCheck, jwtParse } from "../middleware/auth";
 import { validateMyRestaurantRequest } from "../middleware/validation";
+import Order from "../models/Order";
+import Restaurant from "../models/Restaurant";
 
 
 
@@ -19,6 +21,13 @@ const Upload = multer({
     },
 })
 
+router.get (
+    "/order", 
+    jwtCheck,
+    jwtParse,
+    MyRestaurantController.getMyRestaurantOrder);
+    
+    router.patch("/order/:orderId/status", jwtCheck, jwtParse, MyRestaurantController.updateOrderStatus);    
 
 router.get("/", jwtCheck, jwtParse, MyRestaurantController.getMyRestaurant);
 

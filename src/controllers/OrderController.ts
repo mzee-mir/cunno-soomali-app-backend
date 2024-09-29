@@ -9,6 +9,19 @@ const STRIPE = new Stripe(process.env.STRIPE_API_KEY as string);
 const FRONTEND_URL = process.env.FRONTEND_URL as string;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET as string;
 
+const getMyOrder = async(req: Request, res: Response) => {
+  try {
+    const orders = await Order.find({ user: req.userId })
+      .populate("restaurant")
+      .populate("user");
+
+    res.json(orders);
+  } catch (error:any) {
+    console.log(error)
+    return res.status(500).send({message: "Something went wrong"});
+  }
+}
+
 
 type CheckoutSessionRequest = {
     cartItems: {
@@ -48,8 +61,8 @@ const stripeWebhookHandler= async(req:Request, res:Response) => {
       return res.status(404).json({message: "Order not found"})
     }
 
-    order.totalamount= event.data.object.amount_total;
-    order.status= "Paid";
+    order.totalAmount= event.data.object.amount_total;
+    order.status= "paid";
 
     await order.save();
   }
@@ -58,8 +71,6 @@ const stripeWebhookHandler= async(req:Request, res:Response) => {
 }
 
 const createCheckoutSession = async (req: Request, res: Response) => {
-
-  //console.log("Received request:", req.body);
 
     try {
       const checkoutSessionRequest: CheckoutSessionRequest = req.body;
@@ -79,7 +90,7 @@ const createCheckoutSession = async (req: Request, res: Response) => {
       const newOrder = new Order({
         restaurant: restaurant,
         user: req.userId,
-        status: "Placed",
+        status: "placed",
         deliveryDetails: checkoutSessionRequest.deliveryDetails,
         cartItems: checkoutSessionRequest.cartItems,
         createdAt: new Date(),
@@ -175,4 +186,5 @@ const createCheckoutSession = async (req: Request, res: Response) => {
 export default{
     createCheckoutSession,
     stripeWebhookHandler,
+    getMyOrder,
 }

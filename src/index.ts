@@ -8,6 +8,10 @@ import MyRestaurantRoute from "./routes/MyRestaurantRoute";
 import Restaurant from "./models/Restaurant";
 import Restaurent from "./routes/Restaurent";
 import OrderRoutes from "./routes/OrderRoutes";
+import Order from "./models/Order";
+import MyRestaurantController from './controllers/MyRestaurantController';
+import OrderController from "./controllers/OrderController";
+
 
 
 
@@ -42,7 +46,8 @@ app.use("/api/restaurant", Restaurent);
 
 app.use("/api/order", OrderRoutes)
 
- 
+
+
 
 app.listen(3000, () => {
     console.log("Server is running on port 3000");
