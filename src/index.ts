@@ -6,11 +6,21 @@ import myUserRoutes from "./routes/myUserRoutes";
 import{v2 as cloudinary} from "cloudinary";
 import MyRestaurantRoute from "./routes/MyRestaurantRoute";
 import Restaurant from "./models/Restaurant";
-import Restaurent from "./routes/Restaurent";
+import RestaurentRoutes from "./routes/RestaurentRoutes";
 import OrderRoutes from "./routes/OrderRoutes";
 import Order from "./models/Order";
-import MyRestaurantController from './controllers/MyRestaurantController';
-import OrderController from "./controllers/OrderController";
+//import OrderController from "./controllers/OrderController";
+import UserAuthRoutes from "./routes/UserAuthRoutes";
+import RestaurantAuthRoutes from "./routes/RestaurantAuthRoutes";
+import cookieParser from 'cookie-parser';
+import MenuItemRoutes from "./routes/MenuItemRoutes";
+import addressRouter from "./routes/Address";
+import cartRouter from "./routes/cartRouter";
+import AnalyticalRouter from "./routes/AnalyticalRoutes";
+import DashboardRoutes from "./routes/DashboardRoutes";
+import NotificationRoutes from "./routes/NotificationRoutes";
+import http from 'http';
+import { initializeWebSocketServer } from './seervices/webSocketService';
 
 
 
@@ -28,7 +38,12 @@ cloudinary.config({
 
 const app = express();
 
-app.use(cors())
+app.use(
+    cors({
+      origin: 'http://localhost:5173', // Allow requests from this origin
+      credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+    })
+  );
 
 app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }))
 
@@ -38,17 +53,29 @@ app.get("/health", async(req:Request, res:Response)=> {
     res.send ({message: "health Ok! "});
 });
 
+app.use(cookieParser());
+
 app.use("/api/my/user", myUserRoutes);
 
-app.use("/api/my/restaurant", MyRestaurantRoute);
+//app.use("/api/my/restaurant", MyRestaurantRoute);
 
-app.use("/api/restaurant", Restaurent);
+//app.use("/api/restaurant", RestaurentRoutes);
 
 app.use("/api/order", OrderRoutes)
 
+app.use("/api/notification", NotificationRoutes)
+app.use("/api/user", UserAuthRoutes)
+app.use("/api/user/address", addressRouter)
+app.use("/api/user/cart", cartRouter)
+app.use("/api/analytics", AnalyticalRouter)  // Mount analytics first
+app.use("/api/restaurant", RestaurantAuthRoutes)
+app.use("/api/restaurant", MenuItemRoutes)
+app.use("/api/Dashboard", DashboardRoutes);
+
+const server = http.createServer(app);
+initializeWebSocketServer(server);
 
 
-
-app.listen(3000, () => {
+server.listen(3000, () => {
     console.log("Server is running on port 3000");
 });

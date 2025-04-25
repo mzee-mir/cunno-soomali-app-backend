@@ -1,22 +1,26 @@
-import mongoose from "mongoose";
+import { ref } from "joi";
+import mongoose, { Schema } from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-  restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant" },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  restaurant: { type: Schema.Types.ObjectId, ref: "Restaurant" },
+  user: { type: Schema.Types.ObjectId, ref: "User" },
+  address : { type : Schema.Types.ObjectId, ref : 'address' },
   deliveryDetails: {
     email: { type: String, required: true },
     name: { type: String, required: true },
-    addressLine1: { type: String, required: true },
-    city: { type: String, required: true },
+    mobile: { type: String, required: true },
+    address: { type: String, required: true },
   },
   cartItems: [
     {
-      menuItemId: { type: String, required: true },
+      menuItemId: { type: Schema.Types.ObjectId, ref: 'MenuItems' },
       quantity: { type: Number, required: true },
       name: { type: String, required: true },
+      imageUrl: { type: String, required: true },
+      price: { type: Number, required: true },
     },
   ],
-  totalAmount: Number,
+  totalAmount: {type:Number, required : true},
   status: {
     type: String,
     enum: ["placed", "paid", "inProgress", "outForDelivery", "delivered"],

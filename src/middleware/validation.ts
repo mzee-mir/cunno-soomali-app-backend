@@ -1,3 +1,4 @@
+import Joi from "joi";
 import { Request, Response, NextFunction } from "express";
 import {body, validationResult} from "express-validator"
 
@@ -39,3 +40,17 @@ export const validateMyRestaurantRequest = [
       .withMessage("Menu item price is required and must be a postive number"),
       handleValidationError,
   ];
+
+  export const validateReviewRequest = (req:Request, res:Response, next:NextFunction) => {
+    const schema = Joi.object({
+      rating: Joi.number().min(1).max(5).required(),
+      comment: Joi.string().min(5).max(500).required(),
+    });
+  
+    const { error } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+  
+    next();
+  };
