@@ -2,13 +2,8 @@ import express,{Request,Response} from"express";
 import cors from"cors";
 import "dotenv/config";
 import mongoose from "mongoose";
-import myUserRoutes from "./routes/myUserRoutes";
 import{v2 as cloudinary} from "cloudinary";
-import MyRestaurantRoute from "./routes/MyRestaurantRoute";
-import Restaurant from "./models/Restaurant";
-import RestaurentRoutes from "./routes/RestaurentRoutes";
 import OrderRoutes from "./routes/OrderRoutes";
-import Order from "./models/Order";
 //import OrderController from "./controllers/OrderController";
 import UserAuthRoutes from "./routes/UserAuthRoutes";
 import RestaurantAuthRoutes from "./routes/RestaurantAuthRoutes";
@@ -54,12 +49,6 @@ app.get("/health", async(req:Request, res:Response)=> {
 });
 
 app.use(cookieParser());
-
-app.use("/api/my/user", myUserRoutes);
-
-//app.use("/api/my/restaurant", MyRestaurantRoute);
-
-//app.use("/api/restaurant", RestaurentRoutes);
 
 app.use("/api/order", OrderRoutes)
 
