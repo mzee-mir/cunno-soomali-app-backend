@@ -35,7 +35,7 @@ const app = express();
 
 app.use(
     cors({
-      origin: 'http://localhost:5173','https://cunno-soomali-app-frontend.onrender.com' // Allow requests from this origin
+      origin: ['http://localhost:5173', 'https://cunno-soomali-app-frontend.onrender.com'],// Allow requests from this origin
       credentials: true, // Allow credentials (cookies, authorization headers, etc.)
     })
   );
